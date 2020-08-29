@@ -11,11 +11,11 @@
 
 //Sound
 #if USE_VISUALSTUDIO == 1
-#define SOUND_PATH_ARRSHOTING       "music/smw_kick.wav"
-#define MUSIC_PATH_MAIN             "music/JingleBells.mp3"
+#define SOUND_PATH_ARRSHOTING       "music/smw_kick1.wav"
+#define MUSIC_PATH_MAIN             "music/JingleBells1.mp3"
 #else
-#define SOUND_PATH_ARRSHOTING       "smw_kick.wav"
-#define MUSIC_PATH_MAIN             "JingleBells.mp3"
+#define SOUND_PATH_ARRSHOTING       "smw_kick1.wav"
+#define MUSIC_PATH_MAIN             "JingleBells1.mp3"
 #endif
 
 //
