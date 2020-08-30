@@ -9,12 +9,13 @@
 #define PauseLayer_hpp
 
 #include <stdio.h>
+#include "interface.h"
 
 #if USE_ADMOB == 1
 #include "firebase/admob.h"
 #endif
+
 #include "cocos2d.h"
-#include "interface.h"
 
 #define BANNERVIEW_ONLYLOADING 99.0
 

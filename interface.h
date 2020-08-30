@@ -6,8 +6,10 @@
 //---------------------------------------------------------------
 
 //AdMob
-#define USE_ADMOB 0
-#define USE_VISUALSTUDIO 1
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+    #define USE_ADMOB 1
+#endif
+#define USE_VISUALSTUDIO 0
 
 //Sound
 #if USE_VISUALSTUDIO == 1

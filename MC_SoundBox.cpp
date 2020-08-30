@@ -39,8 +39,6 @@ void MC_SoundBox::ReleaseInstance()
 bool MC_SoundBox::init_sound()
 {
     MC_GameOption* pOption = MC_GameOption::GetInstance();
-    CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(SOUND_PATH_ARRSHOTING);
-    CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect(MUSIC_PATH_MAIN);
     
     setSoundVolume(pOption->m_fSoundVolume);
     setMusicVolume(pOption->m_fMusicVolume);
