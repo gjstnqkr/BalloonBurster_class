@@ -1100,9 +1100,8 @@ bool HelloWorld::pushArrowBtn()
     }
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     //exit(0);
-    MC_SoundBox::getInstance()->playSound(SOUND_PATH_ARRSHOTING);
-    
 #endif
+	MC_SoundBox::getInstance()->playSound(SOUND_PATH_ARRSHOTING);
     
     return true;
 }
