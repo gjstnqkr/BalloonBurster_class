@@ -58,6 +58,20 @@ Scene* HelloWorld::scene()
      return HelloWorld::create();
 }
 
+
+Scene* HelloWorld::CreateScene(bool _binfinite)
+{	
+	HelloWorld* pHelloWorld = new (std::nothrow) HelloWorld();
+	pHelloWorld->m_bInfiniteMode = _binfinite;
+	if (pHelloWorld && pHelloWorld->init())
+	{
+		pHelloWorld->autorelease();
+		return pHelloWorld;
+	}
+	CC_SAFE_DELETE(pHelloWorld);
+	return nullptr;		
+}
+
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
@@ -352,6 +366,7 @@ unsigned int HelloWorld::getEnemyCntFromUI()
     return m_UILayer->GetEnemyCntFromLabel();
 }
 
+
 StageValue* HelloWorld::Get_CurrentStage()
 {
     return get_EnableStage()->getCurrentStageVal();
@@ -387,11 +402,24 @@ void HelloWorld::Init_Stage()
     //this->addChild(m_pStage);
     Delete_Stage();
     
-    for(int ii = 0; ii < STAGE_1st_MAX; ii++)
-    {
-        Stage* pStage = Stage::create(ii + 1, this);
-        m_ListStage.pushBack(pStage);
-    }
+	if (!m_bInfiniteMode)
+	{
+		for (int ii = 0; ii < STAGE_1st_MAX; ii++)
+		{
+			Stage* pStage = Stage::create(ii + 1, this);
+			m_ListStage.pushBack(pStage);
+		}
+	}
+	else
+	{
+		for (int ii = 10; ii < STAGE_Infinite_max; ii++)
+		{
+			Stage* pStage = Stage::create(ii + 1, this);
+			m_ListStage.pushBack(pStage);
+		}
+	}
+
+    
 }
 
 void HelloWorld::Delete_Stage()
@@ -407,15 +435,33 @@ void HelloWorld::Delete_Stage()
 
 bool HelloWorld::Enable_Stage(unsigned int nEnableNum)
 {
-    for(int ii = 0; ii < m_ListStage.size(); ii++)
-    {
-        Stage* pStage = m_ListStage.at(ii);
-        if(pStage != nullptr && ii+1 == nEnableNum)
-        {
-            pStage->m_bStageEnable = true;
-            return true;
-        }
-    }
+
+	if (!m_bInfiniteMode)
+	{
+		for (int ii = 0; ii < m_ListStage.size(); ii++)
+		{
+			Stage* pStage = m_ListStage.at(ii);
+			if (pStage != nullptr && ii + 1 == nEnableNum)
+			{
+				pStage->m_bStageEnable = true;
+				return true;
+			}
+		}
+	}
+	else
+	{
+		for (int ii = 0; ii < m_ListStage.size(); ii++)
+		{
+			Stage* pStage = m_ListStage.at(ii);			
+			if (pStage != nullptr && ii + 1 + 10 == nEnableNum)
+			{
+				pStage->m_bStageEnable = true;
+				return true;
+			}
+		}
+	}
+
+
     
     return false;
 }
@@ -1195,10 +1241,7 @@ bool HelloWorld::set_Background(unsigned int _unStageNum)
     else if(_unStageNum == STAGE_1st_TWO)   Director::getInstance()->setClearColor(Color4F(0.3, 0.6, 0.96, 0));
     else{
         Director::getInstance()->setClearColor(Color4F(0.9, 0.8, 0.96, 0));
-    }
-    
-    
-    
+    }    
     
     return true;
 }

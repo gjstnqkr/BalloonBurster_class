@@ -38,6 +38,7 @@ public:
 public:
     cocos2d::MenuItemImage      *m_GameOptionItem;
     cocos2d::MenuItemImage      *m_StartGameItem;
+	cocos2d::MenuItemImage      *m_InfiniteModeItem;
     
     
     bool onContactBegin(cocos2d::PhysicsContact& contact);
@@ -62,6 +63,7 @@ public:
     bool Init_PauseLayer();
     
     bool playGameScene();
+	bool playInfiniteMode();
     
     void        setSceneState(int nSceneState);
     void        setStartMenuEnable(bool bEnable);
@@ -74,6 +76,7 @@ public:
     // a selector callback
     void menuGameOptionCallback(Ref* sender);
     void menuStartGameCallback(Ref* sender);
+	void menuInfiniteModeCallback(Ref* sender);
     
     //MainScene Action
     void schedulerShootArr(float f);

@@ -109,8 +109,13 @@ bool CMainScene::init_ui()
                                             "main_START.png",
                                             "main_START_push.png",
                                             CC_CALLBACK_1(CMainScene::menuStartGameCallback,this));
+
+	m_InfiniteModeItem = MenuItemImage::create(
+											"main_START.png",
+											"main_START_push.png",
+											CC_CALLBACK_1(CMainScene::menuInfiniteModeCallback, this));
     
-    if (spt_bgHome == nullptr || m_GameOptionItem == nullptr || m_StartGameItem == nullptr )
+    if (spt_bgHome == nullptr || m_GameOptionItem == nullptr || m_StartGameItem == nullptr || m_InfiniteModeItem == nullptr)
     {
         problemLoading("'MainScene Image Load Error'");
         return false;
@@ -157,6 +162,20 @@ bool CMainScene::init_ui()
         auto menuStartGame = Menu::create(m_StartGameItem, nullptr);
         menuStartGame->setPosition(Vec2::ZERO);
         this->addChild(menuStartGame, 1);
+
+		// Infinite Mode Btn
+		fBtnPosY = visibleSize.height * 0.5;
+		fBtnPosX = visibleSize.width * 0.5;
+		orgSize_StartBtn = m_InfiniteModeItem->getContentSize();
+		m_InfiniteModeItem->setPosition(origin + Vec2(fBtnPosX, fBtnPosY - orgSize_StartBtn.height/2 + 20) - orgSize_StartBtn / 2);
+		m_InfiniteModeItem->setAnchorPoint(Vec2(0, 0));
+		m_InfiniteModeItem->setScale(0.7);
+
+		auto menuInifiMode = Menu::create(m_InfiniteModeItem, nullptr);
+		menuInifiMode->setPosition(Vec2::ZERO);
+		this->addChild(menuInifiMode, 1);
+
+
     
     }
 
@@ -407,8 +426,29 @@ void CMainScene::menuStartGameCallback(Ref* sender)
         BB_GameInfo::GetInstance()->setGameState(emGameOn); //When Game Started, This Line must On
         playGameScene();
     }
-    
-    
+}
+
+void CMainScene::menuInfiniteModeCallback(Ref* sender)
+{
+	if (getSceneState() != emSceneState::Scene_None) return;
+	if (m_PauseLayer->getLayerState() == emLayerState::Layer_Play) return;
+	if (m_pTextInsert->getLayerState() == emLayerState::Layer_Play) return;
+
+
+	bool isUserFile = MC_FileUtils::init_UserInfo();
+
+
+	if (!isUserFile)
+	{
+		m_pTextInsert->showLayer(true);
+		setStartMenuEnable(false);
+		setSceneState(emSceneState::Scene_Stop);
+	}
+	else
+	{
+		BB_GameInfo::GetInstance()->setGameState(emGameOn); //When Game Started, This Line must On
+		playInfiniteMode();
+	}
 }
 
 
@@ -445,6 +485,20 @@ bool CMainScene::playGameScene()
     }
     
     return false;
+}
+
+bool CMainScene::playInfiniteMode()
+{
+	if (m_SceneState == emSceneState::Scene_None)
+	{		
+		m_HelloWordScene = HelloWorld::CreateScene(true); // NeedToCheck, Check whether Cocos2d dealloc this class.
+		HelloWorld* pHello = dynamic_cast<HelloWorld*>(m_HelloWordScene); //Error pHello Null Ptr
+		pHello->Start_Stage(STAGE_Infinite_01);
+		Director::getInstance()->pushScene(m_HelloWordScene);
+		return true;
+	}
+
+	return false;
 }
 
 

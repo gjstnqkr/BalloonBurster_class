@@ -7,9 +7,11 @@
 
 //AdMob
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    #define USE_ADMOB 1
+    #define USE_ADMOB 0
+#else
+	#define USE_ADMOB 0
 #endif
-#define USE_VISUALSTUDIO 0
+#define USE_VISUALSTUDIO 1
 
 //Sound
 #if USE_VISUALSTUDIO == 1
@@ -106,6 +108,10 @@
 #define STAGE_1st_THREE 3   // '3' of 3-1
 #define STAGE_1st_FOUR  4   // '4' of 4-1
 #define STAGE_1st_MAX STAGE_1st_TWO
+
+// Infinite Mode
+#define STAGE_Infinite_01   11   
+#define STAGE_Infinite_max STAGE_Infinite_01   
 
 #define STAGE_BOUNUS_BALOON 5
 

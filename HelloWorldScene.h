@@ -78,6 +78,8 @@ public:
 	bool m_bIsUp;
 	bool m_bIsDown;
 
+	bool m_bInfiniteMode;
+
 	//Timer
 	float m_fTime;
     
@@ -88,12 +90,14 @@ public:
     virtual bool init() override;
 	virtual void onEnter() override;
 
-	static cocos2d::Scene* scene();
+	static cocos2d::Scene* scene();	
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(HelloWorld);
 
 public:
+	static Scene* CreateScene(bool _bInfinite = false);
+
     StageValue*         Get_CurrentStage();
     UserInformation*    Get_UserInfo();
     

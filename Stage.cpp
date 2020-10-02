@@ -131,9 +131,11 @@ void Stage::init_Current(int _nStage2ndNum)
 void Stage::initStageVal(unsigned int _nStage1st)
 {
     //Clear StageValue
-    m_listStageValue.clear();
-    
+    m_listStageValue.clear();    
+	
+	
     int (*ppArr)[STAGE_WAVE];
+	int(*ppArrInfi)[STAGE_INFINITE_WAVE];
     switch (_nStage1st) {
         case STAGE_1st_ONE:
             ppArr = StageOrder;
@@ -141,24 +143,26 @@ void Stage::initStageVal(unsigned int _nStage1st)
         case STAGE_1st_TWO:
             ppArr = StageOrder_2;
             break;
-            
+		case STAGE_Infinite_01:
+			ppArrInfi = StageOrder_Infinite_1;
+			break;
+			
         default:
             ppArr = StageOrder;
             break;
     }
 
-    for (int ii = 0; ii < STAGE_CNT; ii++) {
+    for (int ii = 0; ii < (_nStage1st > 10 ? STAGE_INFINITE_CNT : STAGE_CNT); ii++) {
         emStageType emStageType = emStageType::SType_FlyingUp;
-        if(ppArr[ii][0] == STAGE_UP) emStageType = emStageType::SType_FlyingUp;
-        else if(ppArr[ii][0] == STAGE_DOWN) emStageType = emStageType::SType_FlyingDown;
-        else if(ppArr[ii][0] == STAGE_BONUS) emStageType = emStageType::SType_Bonus;
+        if(_nStage1st > 10 ? ppArrInfi[ii][0] : ppArr[ii][0] == STAGE_UP) emStageType = emStageType::SType_FlyingUp;
+        else if(_nStage1st > 10 ? ppArrInfi[ii][0] : ppArr[ii][0] == STAGE_DOWN) emStageType = emStageType::SType_FlyingDown;
+        else if(_nStage1st > 10 ? ppArrInfi[ii][0] : ppArr[ii][0] == STAGE_BONUS) emStageType = emStageType::SType_Bonus;
         
-        StageValue* pSV = StageValue::create(ii+1, emStageType);
-        
+        StageValue* pSV = StageValue::create(ii+1, emStageType);		
         int enemyTotalCnt = 0;
-        for (int jj = 1; jj < STAGE_WAVE; jj++) {
-            pSV->m_ListEnemyCnt.pushBack(__Integer::create( ppArr[ii][jj] ) );
-            enemyTotalCnt = enemyTotalCnt + ppArr[ii][jj];
+        for (int jj = 1; jj < (_nStage1st > 10 ? STAGE_INFINITE_WAVE : STAGE_WAVE); jj++) {
+            pSV->m_ListEnemyCnt.pushBack(__Integer::create(_nStage1st > 10 ? ppArrInfi[ii][jj] : ppArr[ii][jj]) );
+            enemyTotalCnt = enemyTotalCnt + _nStage1st > 10 ? ppArrInfi[ii][jj] : ppArr[ii][jj];
         }
 
         pSV->SetEnemyTotalCnt(enemyTotalCnt);

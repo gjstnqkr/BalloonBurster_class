@@ -10,6 +10,10 @@
 #define STAGE_WAVE 3
 #define STAGE_LAST STAGE_CNT
 
+#define STAGE_INFINITE_CNT 4
+#define STAGE_INFINITE_WAVE 3
+
+
 #define STAGE_UP 5
 #define STAGE_DOWN 6
 #define STAGE_BONUS 7
@@ -34,10 +38,21 @@ static int StageOrder[STAGE_CNT][STAGE_WAVE] {
 //2-x
 static int StageOrder_2[STAGE_CNT][STAGE_WAVE] {
     {STAGE_UP, 1, 2 },
-    {STAGE_DOWN, 1, 3 },
+    {STAGE_DOWN, 1, 3 },  
     {STAGE_UP, 1, 3 },
     {STAGE_DOWN, 1, 3 },
     //{0,}  // there is zero? so that stage is bonus stage
+};
+
+
+//infinite Mode 1-x
+static int StageOrder_Infinite_1[STAGE_INFINITE_CNT][STAGE_INFINITE_WAVE]{
+	{ STAGE_UP, 1, 2 },
+	{ STAGE_DOWN, 1, 3 },
+	{ STAGE_UP, 1, 3 },
+	{ STAGE_DOWN, 1, 3 },
+	//{ STAGE_BONUS, 1, 3 },
+	//{0,}  // there is zero? so that stage is bonus stage
 };
 
 
