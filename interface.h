@@ -40,6 +40,7 @@
 #define Z_SCENE_BACKGROUND  1
 #define Z_SCENE_BUILD       2
 #define Z_SCENE_SPRITE      3
+#define Z_SCENE_SPRITE_BG   4
 #define Z_SCENE_UI          9
 #define Z_SCENE_UI_VALUE    10
 #define Z_LAYER             11

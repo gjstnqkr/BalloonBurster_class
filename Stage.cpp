@@ -20,8 +20,9 @@ Stage::Stage()
 	, m_fTempTime(0.0f)
 	, m_nTempNum(0)
     , m_dRotValue(0)
+	, m_nCloudTime(30)	
 	, m_lbEnemy(NULL)
-    , m_lbCenter(NULL)
+    , m_lbCenter(NULL)	
     , m_emTempState(emStageState::SState_None)
     , m_bStageEnable(false)
     , m_fArcherRockTime(0.0f)
@@ -69,29 +70,18 @@ void Stage::initOnce()
     initStageVal(m_unStage1st);
     initLabels();
     //Set_UserScoreLabel(0);
-    init_UserlifeSprite();
-    
-    
+    init_UserlifeSprite();    
     init_Current();
+	init_Sprite();
+
+	//Single
+	auto touchListener = EventListenerTouchOneByOne::create();
+	touchListener->onTouchBegan = CC_CALLBACK_2(Stage::onTouchBegan, this);
+	touchListener->onTouchMoved = CC_CALLBACK_2(Stage::onTouchMoved, this);
+	touchListener->onTouchEnded = CC_CALLBACK_2(Stage::onTouchEnded, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
     
-    //m_ArcherRock
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    auto origin = Director::getInstance()->getVisibleOrigin();
-    
-    Sprite* pSprtRock = Sprite::create("rock.png");
-    const PhysicsMaterial PHYSICSBODY_MATERIAL_DEFAULT(0.1f, 0.5f, 0.5f);
-    PhysicsMaterial PhyMat(1.0f, 0.0f, 1.0f);
-    PhysicsBody* pbody2 = PhysicsBody::createBox(pSprtRock->getContentSize(), PhyMat);
-    
-    PhysicsBody* pbody_Rock = PhysicsBody::createBox(pSprtRock->getContentSize(), ROCK_MATERIAL);
-    pbody2->setDynamic(false);
-    pbody_Rock->setContactTestBitmask(0xFFFFFFFF);
-    pSprtRock->setPhysicsBody(pbody_Rock);
-    m_ArcherRock = pSprtRock;
-    
-    pSprtRock->setPosition(Vec2((visibleSize.width / 2) - 160, (visibleSize.height / 2) - 80));
-    pSprtRock->getPhysicsBody()->setGravityEnable(true);
-    this->addChild(pSprtRock);
+   
 }
 
 void Stage::init_Current(int _nStage2ndNum)
@@ -154,9 +144,13 @@ void Stage::initStageVal(unsigned int _nStage1st)
 
     for (int ii = 0; ii < (_nStage1st > 10 ? STAGE_INFINITE_CNT : STAGE_CNT); ii++) {
         emStageType emStageType = emStageType::SType_FlyingUp;
-        if(_nStage1st > 10 ? ppArrInfi[ii][0] : ppArr[ii][0] == STAGE_UP) emStageType = emStageType::SType_FlyingUp;
-        else if(_nStage1st > 10 ? ppArrInfi[ii][0] : ppArr[ii][0] == STAGE_DOWN) emStageType = emStageType::SType_FlyingDown;
-        else if(_nStage1st > 10 ? ppArrInfi[ii][0] : ppArr[ii][0] == STAGE_BONUS) emStageType = emStageType::SType_Bonus;
+		int nType = (_nStage1st > 10 ? ppArrInfi[ii][0] : ppArr[ii][0]);
+        if(nType == STAGE_UP)
+			emStageType = emStageType::SType_FlyingUp;
+        else if(nType == STAGE_DOWN)
+			emStageType = emStageType::SType_FlyingDown;
+        else if(nType == STAGE_BONUS)
+			emStageType = emStageType::SType_Bonus;
         
         StageValue* pSV = StageValue::create(ii+1, emStageType);		
         int enemyTotalCnt = 0;
@@ -167,7 +161,7 @@ void Stage::initStageVal(unsigned int _nStage1st)
 
         pSV->SetEnemyTotalCnt(enemyTotalCnt);
         m_listStageValue.pushBack(pSV);
-    }
+    }	
 }
 
 void Stage::initLabels()
@@ -201,6 +195,14 @@ void Stage::Start_Stage()
 {
     initOnce();
     this->schedule(schedule_selector(Stage::Stage_Schedular), 0.5f);
+
+	//if ((get_Stage1stNum() >= 3 && get_Stage1stNum() < 5) || (get_Stage1stNum() > 11))
+	{
+		int nRanVal = RandomHelper::random_int(30, 60);
+		m_nCloudTime = nRanVal;
+
+		this->schedule(schedule_selector(Stage::Start_CloudSchedular), 5);
+	}
 }
 
 void Stage::Delete_Stage()
@@ -218,8 +220,12 @@ void Stage::Delete_Stage()
     }
     
     for (int jj = 0; jj < m_listBird.size(); jj++) {
-        if(m_listBird.at(jj) != nullptr) delete m_listBird.at(jj);
+        if(m_listBird.at(jj) != nullptr) delete m_listBird.at(jj);		
     }
+
+	for (int jj = 0; jj < m_vecCloud.size(); jj++) {
+		if (m_vecCloud.at(jj) != nullptr) delete m_vecCloud.at(jj);
+	}
 }
 
 void Stage::Start_StageTextAndAppearBM() //Start Point
@@ -425,6 +431,38 @@ void Stage::AddBird(Vec2 Pos)
     pParent->addChild(pSprite);
 }
 
+void Stage::appearCloud()
+{
+	int makeCnt = RandomHelper::random_int(2, 10);
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+
+	int cntCurCloud = 0;
+	for (int ii = 0; ii < m_vecCloud.size(); ii++)
+	{
+		Sprite* itor = m_vecCloud.at(ii);
+		if(itor->getOpacity() == 254)
+			cntCurCloud++;
+	}
+
+
+	cntCurCloud = makeCnt - cntCurCloud;
+	makeCnt = 0;
+	for (int ii = 0; ii < m_vecCloud.size(); ii++)
+	{
+		if (makeCnt >= cntCurCloud) break;
+		Sprite* itor = m_vecCloud.at(ii); 
+		if (itor->getOpacity() != 255) continue;
+			
+		int valueX = RandomHelper::random_real(visibleSize.width * 0.2f, visibleSize.width * 0.9f);
+		int valueY = RandomHelper::random_real(visibleSize.height * 0.2f, visibleSize.height * 0.9f);
+			
+		itor->setPosition(Vec2(valueX, valueY));
+		itor->setOpacity(254);
+		makeCnt++;
+	}
+
+}
+
 void Stage::Appear_Group(unsigned int _unEnemyCnt)
 {
     unsigned int unCnt = _unEnemyCnt;
@@ -481,6 +519,11 @@ void Stage::Start_GameOverScheduler(float _dt)
     }
     
     Director::getInstance()->popToRootScene();
+}
+
+void Stage::Start_CloudSchedular(float _dt)
+{
+	appearCloud();	
 }
 
 void Stage::Appear_BalloonMaker(emMovingType _mType)
@@ -604,6 +647,7 @@ void Stage::set_Stage1stNum(unsigned int _unStage1st)
 {
     m_unStage1st = _unStage1st;
 }
+
 
 
 void Stage::NextStage(float _float)
@@ -770,6 +814,53 @@ void Stage::init_UserlifeSprite()
         Add_UserLifeSpriteAtList();
 }
 
+void Stage::init_Sprite()
+{
+	//m_ArcherRock
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	auto origin = Director::getInstance()->getVisibleOrigin();
+
+	Sprite* pSprtRock = Sprite::create("rock.png");
+	const PhysicsMaterial PHYSICSBODY_MATERIAL_DEFAULT(0.1f, 0.5f, 0.5f);
+	PhysicsMaterial PhyMat(1.0f, 0.0f, 1.0f);
+	PhysicsBody* pbody2 = PhysicsBody::createBox(pSprtRock->getContentSize(), PhyMat);
+
+	PhysicsBody* pbody_Rock = PhysicsBody::createBox(pSprtRock->getContentSize(), ROCK_MATERIAL);
+	pbody2->setDynamic(false);
+	pbody_Rock->setContactTestBitmask(0xFFFFFFFF);
+	pSprtRock->setPhysicsBody(pbody_Rock);
+	m_ArcherRock = pSprtRock;
+
+	pSprtRock->setPosition(Vec2((visibleSize.width / 2) - 160, (visibleSize.height / 2) - 80));
+	pSprtRock->getPhysicsBody()->setGravityEnable(true);
+	this->addChild(pSprtRock);
+
+	
+	//--------------------------------------
+	//insert Cluod Batch Node
+
+	HelloWorld* pHello = dynamic_cast<HelloWorld*>(getParent());
+#if	USE_VISUALSTUDIO == 1
+	auto batch = SpriteBatchNode::create("image/clowdlarge.png");
+#else
+	auto batch = SpriteBatchNode::create("clowdlarge.png");
+#endif
+
+	pHello->addChild(batch, 0, Z_SCENE_SPRITE_BG);
+
+	for (int ii = 0; ii < 10; ii++)
+	{
+		auto spt1 = Sprite::createWithTexture(batch->getTexture());
+		m_vecCloud.pushBack(spt1);
+	}
+
+	for (int ii = 0; ii < m_vecCloud.size(); ii++)
+	{
+		Sprite* itor = m_vecCloud.at(ii);
+		batch->addChild(itor, 0, Z_SCENE_SPRITE_BG);
+	}
+}
+
 void Stage::Clear_LifeList()
 {
     Node* pParent = this->getParent();
@@ -829,6 +920,28 @@ void Stage::onTouchEnded(Touch* touch, Event* event)
 {
     auto touchPoint = touch->getLocation();
     if(touch->getID() != 0) return;
+	
+
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+
+	for (int ii = 0; ii < m_vecCloud.size(); ii++)
+	{
+		cocos2d::Sprite* pCloud = m_vecCloud.at(ii);
+		bool isTouch = pCloud->getBoundingBox().containsPoint(touchPoint);
+		if (isTouch)
+		{
+			int Alpha = pCloud->getOpacity();
+			Alpha = Alpha - 100;
+			if (Alpha < 0)
+			{
+				pCloud->setPosition(Vec2(-900, -900));
+				pCloud->setOpacity(255);
+			}
+			else
+				pCloud->setOpacity(Alpha);
+
+		}
+	}
 }
 
 void Stage::onTouchCancelled(Touch* touch, Event* event)
@@ -836,5 +949,3 @@ void Stage::onTouchCancelled(Touch* touch, Event* event)
     auto touchPoint = touch->getLocation();
     if(touch->getID() != 0) return;
 }
-
-

@@ -107,6 +107,7 @@ public:
     cocos2d::Vector<StageValue*>        m_listStageValue;
     cocos2d::Vector<cocos2d::Sprite*>   m_listUserLifeSprite;
     cocos2d::Vector<cocos2d::Sprite*>   m_listBird;
+	cocos2d::Vector<cocos2d::Sprite*>   m_vecCloud;	
     Archer*                             m_pArcher;
 	cocos2d::Label*						m_lbEnemy;
     cocos2d::Label*                     m_lbCenter;
@@ -115,7 +116,7 @@ public:
     cocos2d::Sprite*                    m_ArcherRock;
     
 
-    unsigned int                        m_unStage1st;
+    unsigned int                        m_unStage1st; // ex) '1'-1, '1'-2 -> '1' or '1'
 	unsigned int						m_unCurrentStage2nd;
     unsigned int                        m_unUserLife;
     unsigned int                        m_unUserScore;
@@ -133,6 +134,9 @@ private:
     
     double                              m_dRotValue;
     float                               m_fArcherRockTime;
+
+	//cloud appear time
+	int									m_nCloudTime;
 	
 
 public:
@@ -146,6 +150,7 @@ public:
 	
     //init
     void initOnce();
+	void init_Sprite();
     void init_Current(int _nStageNum = 1);
     void initStageVal(unsigned int _nStage1st);
     void initLabels();
@@ -164,6 +169,8 @@ public:
 	void AppearanceTimer(float _dt);
     void lbCenter_InvisibleScheduler(float _dt);
     void Start_GameOverScheduler(float _dt);
+
+	void Start_CloudSchedular(float _dt);
     
 
     //Run Game time
@@ -172,7 +179,7 @@ public:
 	void DecreaseEnemyNum();
     
     void AddBird(cocos2d::Vec2 Pos);
-    
+	void appearCloud();
     
     void Start_StageTextAndAppearBM();
     void ShowStageText(int _n1st ,int _n2nd);
