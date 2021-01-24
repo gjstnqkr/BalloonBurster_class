@@ -114,6 +114,7 @@ public:
     cocos2d::Label*                     m_lbUserScore;
     
     cocos2d::Sprite*                    m_ArcherRock;
+	cocos2d::Sprite*                    m_LightningBtn; //all kill
     
 
     unsigned int                        m_unStage1st; // ex) '1'-1, '1'-2 -> '1' or '1'
@@ -124,6 +125,7 @@ public:
 	unsigned int						m_unEnemyCnt;
     unsigned int                        m_unMissedEnemyCnt;
     bool                                m_bStageEnable;
+	bool                                m_bTouchBallonMode;
 
 
 private:

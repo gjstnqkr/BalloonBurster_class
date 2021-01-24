@@ -123,7 +123,7 @@ void CAnimationScene::set_BGandSpriteOnStage(unsigned int _StageNum)
     //insert Archer
     Vec2 pos = Vec2(Vec2((visibleSize.width / 2) - 350, (visibleSize.height / 2) + 80));
     m_pArcher = Archer::create(pos);
-    m_pArcher->setScale(2.0f);
+    m_pArcher->setScale(ARCHER_SCALE);
     this->addChild(m_pArcher);
     m_pArcher->init_ArcherState();
     //--------------------------------------end

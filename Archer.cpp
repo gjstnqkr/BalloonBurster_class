@@ -30,11 +30,11 @@ Archer* Archer::create(cocos2d::Vec2 _pos)
 //        pArc->initWithJsonFile("spineboy-ess.json", atlas, 0.6);
         
 #if	USE_VISUALSTUDIO == 1
-		spAtlas* atlas = spAtlas_createFromFile("spine/Archer_60.atlas", 0);
-		pArc->initWithJsonFile("spine/Archer_60.json", atlas, 0.6);
+		spAtlas* atlas = spAtlas_createFromFile("spine/Elf_Archer_01.atlas", 0);
+		pArc->initWithJsonFile("spine/Elf_Archer_01.json", atlas, 0.6);
 #else
-		spAtlas* atlas = spAtlas_createFromFile("Archer_60.atlas", 0);
-		pArc->initWithJsonFile("Archer_60.json", atlas, 0.6);
+		spAtlas* atlas = spAtlas_createFromFile("Elf_Archer_01.atlas", 0);
+		pArc->initWithJsonFile("Elf_Archer_01.json", atlas, 0.6);
 #endif
 
         
@@ -149,6 +149,7 @@ bool Archer::Make_ArcherArrow(cocos2d::Vec2 _pos)
 {
 	Arrow* pArr = Arrow::create(_pos, this);
     pArr->setVisible(false);
+	pArr->setScale(ARCHER_SCALE);
 	this->addChild(pArr);
     
 	m_listArrow.pushBack(pArr);
@@ -156,8 +157,9 @@ bool Archer::Make_ArcherArrow(cocos2d::Vec2 _pos)
 	return true;
 }
 
-void Archer::ShootArrow()
+int Archer::ShootArrow()
 {
+	int shooing = 0;
 	for (int ii = 0; ii < m_listArrow.size(); ii++)
 	{
 		Arrow* pItArr = m_listArrow.at(ii);
@@ -176,6 +178,7 @@ void Archer::ShootArrow()
 		if (CurState == emArrowState::Arr_ShootWait)
 		{
 			pItArr->ShootArrow();
+			shooing = 1;
 		}
 		
 	}
@@ -208,6 +211,8 @@ void Archer::ShootArrow()
             }
 		}
 	}
+
+	return shooing;
 	
 }
 

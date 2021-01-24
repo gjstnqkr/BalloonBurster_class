@@ -129,14 +129,13 @@ public:
     
     void setBMRockGravity(bool _gravity);
     unsigned int getEnemyCntFromUI();
+
+	void Plus_StageScore(unsigned int _Point);
 private:
 	void Init_Value();
     void Init_UI();
 	void Init_SpriteModel();
 	void Init_EventListener();
-    
-    
-    void Plus_StageScore(unsigned int _Point);
     
     //stage
     void Init_Stage();

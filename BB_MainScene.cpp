@@ -195,7 +195,7 @@ bool CMainScene::init_sprite()
     //insert Archer
     Vec2 pos = Vec2(Vec2((visibleSize.width / 2) - 300, (visibleSize.height / 2) - 200 ));
     Archer* pArcher = Archer::create(pos);
-    pArcher->setScale(4.0f);
+    pArcher->setScale(0.4f);
     this->addChild(pArcher, 1);
     m_pArcher = pArcher;
     m_pArcher->init_ArcherState();

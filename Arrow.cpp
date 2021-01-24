@@ -5,8 +5,8 @@
 
 using namespace cocos2d;
 #define Arr_Speed 1.3f
-#define arrX 1.0f
-#define arrY 1.0f
+#define arrX ARCHER_SCALE * 0.6f
+#define arrY ARCHER_SCALE * 0.6f
 
 Arrow::Arrow()
 : m_emState(emArrowState::Arr_Preparing)
@@ -24,9 +24,9 @@ Arrow* Arrow::create(Vec2 _Pos, Archer* _parent)
 {
 	Arrow *sprite = new (std::nothrow) Arrow();
 #if	USE_VISUALSTUDIO == 1	
-	if (sprite && sprite->initWithFile("image/dart.png"))
+	if (sprite && sprite->initWithFile("Arrow.png"))
 #else
-	if (sprite && sprite->initWithFile("dart.png"))
+	if (sprite && sprite->initWithFile("Arrow.png"))
 #endif
     
 	{

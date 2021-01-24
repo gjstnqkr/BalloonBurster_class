@@ -33,7 +33,7 @@ public:
 	void Timer(float _dt);
 	
 	bool Make_ArcherArrow(cocos2d::Vec2 _pos);
-	void ShootArrow();
+	int ShootArrow();
 	void DyingAction();
 
 		

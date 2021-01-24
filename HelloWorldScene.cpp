@@ -124,7 +124,7 @@ bool HelloWorld::init()
 	//this->addChild(ground);
 
 	//Bounding Box
-	this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	//this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     return true;
 }
@@ -186,7 +186,7 @@ void HelloWorld::Init_SpriteModel()
     //insert Archer
     Vec2 pos = Vec2(Vec2((visibleSize.width / 2) - 350, (visibleSize.height / 2) + 80));
     m_pArcher = Archer::create(pos);
-    m_pArcher->setScale(2.0f);
+    m_pArcher->setScale(ARCHER_SCALE);
     this->addChild(m_pArcher);
     m_pArcher->init_ArcherState();
     //--------------------------------------end
@@ -791,8 +791,8 @@ void HelloWorld::onMouseMove(cocos2d::Event * event)
 	EventMouse* e = (EventMouse*)event;
 	float fCursorX = e->getCursorX();
 	float fCursorY = e->getCursorY();
-
-	if(m_pArcher->get_ArcState() != emArcherState::Arc_Dying)
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	if(m_pArcher->get_ArcState() != emArcherState::Arc_Dying && fCursorX < visibleSize.width * 0.35)
 	{
 		Vec2 vecPos = m_pArcher->getPosition();
 		m_pArcher->Set_TouchPosition(vecPos.x, fCursorY);
@@ -1141,8 +1141,8 @@ bool HelloWorld::pushArrowBtn()
     //Shoot Arrow;
     if(m_pArcher->get_ArcState() != emArcherState::Arc_Dying)
     {
-        m_pArcher->ShootArrow();
-        m_pArcher->setArcherAnimation(1);
+        if(m_pArcher->ShootArrow() == 1)
+			m_pArcher->setArcherAnimation(1);
     }
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     //exit(0);

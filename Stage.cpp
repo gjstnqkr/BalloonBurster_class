@@ -1,6 +1,9 @@
 #include "Stage.h"
 #include "BB_GameInfo.h"
 #include "HelloWorldScene.h"
+#include "BB_ActionTexture.hpp"
+#include "Balloon.h"
+#include "MC_SoundBox.hpp"
 
 
 using namespace cocos2d;
@@ -25,8 +28,10 @@ Stage::Stage()
     , m_lbCenter(NULL)	
     , m_emTempState(emStageState::SState_None)
     , m_bStageEnable(false)
+	, m_bTouchBallonMode(true)
     , m_fArcherRockTime(0.0f)
     , m_ArcherRock(nullptr)
+	, m_LightningBtn(nullptr)
 {
 }
 
@@ -424,7 +429,7 @@ void Stage::AddBird(Vec2 Pos)
     
     auto visibleSize = Director::getInstance()->getVisibleSize();
     
-    Sprite* pSprite = Sprite::create("bird1.png");
+    Sprite* pSprite = Sprite::create("bird1.png");  //여기서부터20201104
     pSprite->setPosition(Pos);
     pSprite->setScale(1.5);
     m_listBird.pushBack(pSprite);
@@ -816,6 +821,8 @@ void Stage::init_UserlifeSprite()
 
 void Stage::init_Sprite()
 {
+	HelloWorld* pHello = dynamic_cast<HelloWorld*>(getParent());
+
 	//m_ArcherRock
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	auto origin = Director::getInstance()->getVisibleOrigin();
@@ -835,11 +842,18 @@ void Stage::init_Sprite()
 	pSprtRock->getPhysicsBody()->setGravityEnable(true);
 	this->addChild(pSprtRock);
 
+	//--------------------------------------start
+	//Lightning
+	m_LightningBtn = cocos2d::Sprite::create("button_SoundOn.png");
+	m_LightningBtn->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2 + m_LightningBtn->getContentSize().height / 2));
+	m_LightningBtn->setVisible(true);
+	//this->addChild(m_LightningBtn, Z_SCENE_UI);
+	pHello->addChild(m_LightningBtn, Z_SCENE_UI);
 	
 	//--------------------------------------
 	//insert Cluod Batch Node
 
-	HelloWorld* pHello = dynamic_cast<HelloWorld*>(getParent());
+	
 #if	USE_VISUALSTUDIO == 1
 	auto batch = SpriteBatchNode::create("image/clowdlarge.png");
 #else
@@ -940,6 +954,104 @@ void Stage::onTouchEnded(Touch* touch, Event* event)
 			else
 				pCloud->setOpacity(Alpha);
 
+		}
+	}
+	
+	bool isTouch = m_LightningBtn->getBoundingBox().containsPoint(touchPoint);
+	if (isTouch)
+	{
+		log("m_LightningBtn()__");
+		HelloWorld* pHello = dynamic_cast<HelloWorld*>(getParent());
+		for (int ii = 0; ii < m_listBalloonMaker.size(); ii++)
+		{
+			BalloonMaker* pBM = m_listBalloonMaker.at(ii);
+
+			if (!(pBM->get_BMakerState() == BM_FlyingUp || pBM->get_BMakerState() == BM_FlyingDown)) continue;
+
+			//int size = pBM->m_listBalloon.size();
+			for (int jj = 0; jj < pBM->m_listBalloon.size(); jj++)
+			{	
+				Balloon* pBalloon = pBM->m_listBalloon.at(jj);
+				
+				Vec2 pos = pBalloon->getPosition();
+				ActionTexture* ActTexture = nullptr;
+				BalloonMaker* itBM = pBalloon->get_BalloonMaker();
+				if (itBM == nullptr || itBM->getReferenceCount() < 1) 
+					continue;
+				
+				itBM->eraseBalloonInList(pBalloon);
+				jj = jj - 1;
+				pHello->removeChild(pBalloon, true);
+
+				if (itBM->m_emType == emMakerType::WHITE)
+					itBM->updateSpeedAndMove(itBM->get_BalloonCount());
+				
+				if (itBM->get_BalloonCount() > 0) 
+					continue;
+
+				ActTexture = ActionTexture::create(pos, emActionTextureType::AT_Number, this);
+				if (pBalloon->get_BalloonState() == emBalloonState::Balloon_Free) {
+					ActTexture->SetNumLabel(SCORE_BALLOON, SMALL_SIZE, Color3B(255, 130, 100));
+					pHello->Plus_StageScore(SCORE_BALLOON);
+				}
+				else {
+					ActTexture->SetNumLabel(SCORE_BM, NORMAL_SIZE, Color3B(255, 130, 100));
+					pHello->Plus_StageScore(SCORE_BM);
+				}
+				ActTexture->showActionTexture();
+
+				itBM->Fall_BalloonMaker();
+				MC_SoundBox::getInstance()->tryVibration(0.1);				
+				
+			}
+		}
+	}
+
+	if (m_bTouchBallonMode)
+	{
+		printf_s("ddd");
+		HelloWorld* pHello = dynamic_cast<HelloWorld*>(getParent());
+		for (int ii = 0; ii < m_listBalloonMaker.size(); ii++)
+		{
+			BalloonMaker* pBM = m_listBalloonMaker.at(ii);
+
+			int bPass = false;
+			for (int jj = 0; jj < pBM->m_listBalloon.size(); jj++)
+			{
+				if (bPass) break;
+				Balloon* pBalloon = pBM->m_listBalloon.at(jj);
+				bool isTouch = pBalloon->getBoundingBox().containsPoint(touchPoint);
+				if (isTouch)
+				{
+					Vec2 pos = pBalloon->getPosition();
+					ActionTexture* ActTexture = nullptr;
+					BalloonMaker* itBM = pBalloon->get_BalloonMaker();
+					if (itBM == nullptr || itBM->getReferenceCount() < 1) continue;
+					bPass = true;
+					itBM->eraseBalloonInList(pBalloon);
+					pHello->removeChild(pBalloon, true);
+
+					if (itBM->m_emType == emMakerType::WHITE)
+						itBM->updateSpeedAndMove(itBM->get_BalloonCount());
+
+					if (itBM->get_BalloonCount() > 0) continue;
+
+					ActTexture = ActionTexture::create(pos, emActionTextureType::AT_Number, this);
+					if (pBalloon->get_BalloonState() == emBalloonState::Balloon_Free) {
+						ActTexture->SetNumLabel(SCORE_BALLOON, SMALL_SIZE, Color3B(255, 130, 100));
+						pHello->Plus_StageScore(SCORE_BALLOON);
+					}
+					else {
+						ActTexture->SetNumLabel(SCORE_BM, NORMAL_SIZE, Color3B(255, 130, 100));
+						pHello->Plus_StageScore(SCORE_BM);
+					}
+					ActTexture->showActionTexture();
+
+					itBM->Fall_BalloonMaker();
+					MC_SoundBox::getInstance()->tryVibration(0.1);
+					break;
+				}
+			}
 		}
 	}
 }
