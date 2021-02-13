@@ -615,7 +615,7 @@ void HelloWorld::onTouchEnded(Touch* touch, Event* event)
     if(isTouch)
         m_UILayer->m_pArrBtn->setTexture("button_Play.png");
     
-#if MOVE_BTN == 1
+#if MOVE_BTN == 16
     m_bIsUp     = false;
     m_bIsDown   = false;
     if(this->isScheduled(schedule_selector(HelloWorld::ArcherMoveEvent)))

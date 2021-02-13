@@ -134,8 +134,9 @@
 #define NORMAL_SIZE 1.2f
 
 
-//Archer Size
+//Chracter Size
 #define ARCHER_SCALE 0.3f
+#define GOBLIN_SCALE 0.2f
 
 
 

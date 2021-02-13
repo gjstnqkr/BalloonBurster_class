@@ -17,9 +17,9 @@ using namespace cocos2d;
 #define BM_OFFSET 10.0f
 
 
-#define BM_COLOR_GREEN cocos2d::Color3B(75.0f, 245.0f, 75.0f)
-#define BM_COLOR_RED cocos2d::Color3B(245.0f, 20.0f, 20.0f)
-#define BM_COLOR_BLACK cocos2d::Color3B(20.0f, 20.0f, 20.0f)
+#define BM_COLOR_GREEN cocos2d::Color3B(105.0f, 245.0f, 105.0f)
+#define BM_COLOR_RED cocos2d::Color3B(245.0f, 50.0f, 50.0f)
+#define BM_COLOR_BLACK cocos2d::Color3B(120.0f, 120.0f, 120.0f)
 #define BM_COLOR_WHITE cocos2d::Color3B(255.0f, 255.0f, 255.0f)
 #define BM_COLOR_BOSS cocos2d::Color3B(155.0f, 185.0f, 175.0f)
 
@@ -76,11 +76,11 @@ BalloonMaker* BalloonMaker::create(cocos2d::Vec2 _pos, emMakerType _emType, emMo
         //pBM->initWithJsonFile("goblins-pro.json", atlas, 1.0f);
 
 #if	USE_VISUALSTUDIO == 1		
-		spAtlas* atlas = spAtlas_createFromFile("spine/gobline.atlas", 0);
-		pBM->initWithJsonFile("spine/gobline.json", atlas, 0.6);
+		spAtlas* atlas = spAtlas_createFromFile("spine/Elf_Goblin_01.atlas", 0);
+		pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
 #else		
-		spAtlas* atlas = spAtlas_createFromFile("gobline.atlas", 0);
-		pBM->initWithJsonFile("gobline.json", atlas, 0.6);
+		spAtlas* atlas = spAtlas_createFromFile("Elf_Goblin_01.atlas", 0);
+		pBM->initWithJsonFile("Elf_Goblin_01.json", atlas, 0.6);
 #endif
         
         pBM->init_SkelAnimation();
@@ -159,7 +159,7 @@ void BalloonMaker::init_Cocos2dInfo(cocos2d::Vec2 _pos, emMakerType _emType, emM
 	pbody->setContactTestBitmask(0xFFFFFFFF); 		
 	
 	this->setPhysicsBody(pbody);
-	this->setScale(fBM_vecScale);
+	this->setScale(GOBLIN_SCALE * fBM_vecScale);
 	this->getPhysicsBody()->setGravityEnable(false);  //Apply Grabvity 
 }
 
@@ -215,7 +215,7 @@ void BalloonMaker::init_SkelAnimation()
 	
 	//Animation info
 	this->setAnimation(0, "Run", true);
-    this->setAttachment("spear", NULL);
+    this->setAttachment("Sword", NULL);
     
 #endif
 }
@@ -358,8 +358,8 @@ void BalloonMaker::Start_Scheduler(float _dt)
                 this->setPosition(Vec2(fAttackPos, fAttackPos + (nBMCnt*75)));
                 set_BMakerState(emMakerState::BM_Achieved_Attack);
                 setBallonMakerAnimation(emMakerState::BM_Achieved_Attack, true);
-                spAttachment* pAttachment = this->getAttachment("spear", "spear");
-                this->setAttachment("spear", "spear");
+                spAttachment* pAttachment = this->getAttachment("Sword", "Sword");
+                this->setAttachment("Sword", "Sword");
                 this->stopAllActions();
             }
         }
@@ -416,7 +416,7 @@ void BalloonMaker::Start_Scheduler(float _dt)
             float CurActStat = this->getNumberOfRunningActions();   //if return value 0.0, this Sprite State is No Action.
             //m_fTempTime = m_fTime +
             
-            Vec2 spearFrontPt = this->get_BMSpineBonePos("SpearFront");
+            Vec2 spearFrontPt = this->get_BMSpineBonePos("weaponPoint");
             HelloWorld* pHello = dynamic_cast<HelloWorld*>(this->getParent());
             
             Rect ArcherRect = pHello->m_pArcher->getBoundingBox();
@@ -427,7 +427,7 @@ void BalloonMaker::Start_Scheduler(float _dt)
                 log("Collision Spear!!!");
             }
             //log("x - %f, y - %f", spearFrontPt.x, spearFrontPt.y );
-            //spAttachment* pAttachment = this->getAttachment("spear", "spear");
+            //spAttachment* pAttachment = this->getAttachment("Sword", "Sword");
             //log("%f - m_fTime");
             if(m_fTempTime > 1.0f)
             {
@@ -592,7 +592,7 @@ void BalloonMaker::ChangeAction()
 	{
 		this->stopAllActions();
         BM_Color3B      = BM_COLOR_WHITE;
-        fBM_vecScale    = BM_SCALE_WHITE;
+        fBM_vecScale    = GOBLIN_SCALE * BM_SCALE_WHITE;
 		ScaleTo* ActionScale	= cocos2d::ScaleTo::create(3.0f, fBM_vecScale, fBM_vecScale);
 		TintTo*  ActionTin		= cocos2d::TintTo::create(3.0f, BM_Color3B.r, BM_Color3B.g, BM_Color3B.b);
 		
@@ -636,7 +636,7 @@ bool BalloonMaker::Make_Balloon(Vec2 _pos, float fSpeedVal)
     {
         Balloon* pBalloon = Balloon::create(_pos, fSpeedVal);
         pBalloon->set_BalloonMaker(this);
-        
+		pBalloon->setScale(GOBLIN_SCALE);
         pParent->addChild(pBalloon);
         m_listBalloon.pushBack(pBalloon);
     }
@@ -870,11 +870,11 @@ bool BalloonMaker::setBMSpineSpear(bool bSpear)
     if(bSpear)
     {
         //let spear = this.findSlot("spear").attachment.name;
-        this->setAttachment("spear", "spear");
+        this->setAttachment("Sword", "Sword");
     }
     else
     {
-        this->setAttachment("spear", NULL);
+        this->setAttachment("Sword", NULL);
     }
     
     

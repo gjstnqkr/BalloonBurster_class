@@ -546,10 +546,11 @@ void Stage::Appear_BalloonMaker(emMovingType _mType)
     else
         fAppearPosH = visibleSize.height * 0.15; //Current Height 20%
     
-    int type = RandomHelper::random_int(0, (int)emMakerType::GREEN);
+    int type = RandomHelper::random_int(0, (int)emMakerType::GREEN);	
 	Vec2 pos = Vec2(visibleSize.width, fAppearPosH);
     BalloonMaker* pBM = BalloonMaker::create(pos, (emMakerType)type, _mType);
     
+	pBM->setScale(GOBLIN_SCALE);
     pBM->set_MaxHigh(visibleSize.height * 0.90);
     pBM->set_MaxLow(visibleSize.height * 0.15);
     
