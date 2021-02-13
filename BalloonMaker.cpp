@@ -26,8 +26,8 @@ using namespace cocos2d;
 
 #define BM_SCALE_GREEN 1.0f
 #define BM_SCALE_RED 1.1f
-#define BM_SCALE_BLACK 1.3f
-#define BM_SCALE_WHITE 1.4f
+#define BM_SCALE_BLACK 1.15f
+#define BM_SCALE_WHITE 1.2f
 #define BM_SCALE_BOSS 2.5f
 
 
@@ -345,8 +345,10 @@ void BalloonMaker::Start_Scheduler(float _dt)
 		else if (get_BMakerState() == emMakerState::BM_FlyingUp && CurActStat == 0.0f) //fly up
 		{
             Vec2 vecHandPt =get_BMSpineBonePos("Right_Arm_HandPt");
-            Vec2 Offset(-5.0f, 55.f);
-			Make_Balloon(vecHandPt + Offset, m_fMoveSpeed);
+			Vec2 Offset = Vec2(0, 0);
+			if (get_BMakerType() == OGRE || get_BMakerType() == ORC) Offset = Vec2(0, 12);
+			
+			Make_Balloon(vecHandPt + BallonPos_Offset + Offset, m_fMoveSpeed);
             set_StateBalloon(emBalloonState::Balloon_Up);
             setBallonMakerAnimation(emMakerState::BM_FlyingUp, true);
 
@@ -372,8 +374,11 @@ void BalloonMaker::Start_Scheduler(float _dt)
         else if (get_BMakerState() == emMakerState::BM_FlyingDown && CurActStat == 0.0f) //fly down
         {
             Vec2 vecHandPt =get_BMSpineBonePos("Right_Arm_HandPt");
-            Vec2 Offset(-5.0f, 55.f);
-            Make_Balloon(vecHandPt + Offset, m_fMoveSpeed);
+
+			Vec2 Offset = Vec2(0, 0);
+			if (get_BMakerType() == OGRE || get_BMakerType() == ORC) Offset = Vec2(0, 12);
+
+			Make_Balloon(vecHandPt + BallonPos_Offset + Offset, m_fMoveSpeed);
             set_StateBalloon(emBalloonState::Balloon_Down);
             setBallonMakerAnimation(emMakerState::BM_FlyingDown, true);
             
@@ -838,6 +843,11 @@ emMakerState BalloonMaker::get_BMakerState()
 unsigned int BalloonMaker::get_BalloonCount()
 {
     return m_listBalloon.size();
+}
+
+int BalloonMaker::get_BMakerType()
+{
+	return m_emType;
 }
 
 void BalloonMaker::set_BMakerState(emMakerState _emState)

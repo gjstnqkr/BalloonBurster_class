@@ -86,6 +86,7 @@ public:
 	
 	emMakerState	get_BMakerState();
     unsigned int    get_BalloonCount();
+	int				get_BMakerType();
     
 	void			set_BMakerState(emMakerState _emState);
 	void			set_BMakerFlyingUp();

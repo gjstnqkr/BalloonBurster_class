@@ -103,7 +103,6 @@
 #define RANK_COLUMN_GAP 60
 
 //stage
-
 #define STAGE_1st_ONE   1   // One Of 1st Stage ex)1-1
 #define STAGE_1st_TWO   2   // '2' of 2-1
 #define STAGE_1st_THREE 3   // '3' of 3-1
@@ -137,6 +136,10 @@
 //Chracter Size
 #define ARCHER_SCALE 0.3f
 #define GOBLIN_SCALE 0.2f
+
+
+//Etc
+#define BallonPos_Offset Vec2(-7.0f, 75.f)
 
 
 
