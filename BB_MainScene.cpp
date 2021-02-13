@@ -260,7 +260,7 @@ bool CMainScene::init_sprite()
 		
         
         int value = RandomHelper::random_real(1.0f, 2.0f);
-        pBalloon->setScale(GOBLIN_SCALE);
+        pBalloon->setScale(value);
         m_listBalloon.pushBack(pBalloon);
     }
     
@@ -544,8 +544,8 @@ void CMainScene::schedulerShootArr(float f)
             pBalloon->set_MoveDistance(200);
             pBalloon->Fly_Balloon(10);
             int value = RandomHelper::random_real(1.0f, 2.0f);
-            //pBalloon->setScale(value);
-			pBalloon->setScale(GOBLIN_SCALE);
+            pBalloon->setScale(value);
+			//pBalloon->setScale(GOBLIN_SCALE);
         }
     }
     
@@ -603,7 +603,6 @@ bool CMainScene::onContactBegin(PhysicsContact& contact)
             pBalloon->Fly_Balloon(10);
             int value = RandomHelper::random_real(1.0f, 2.0f);
             pBalloon->setScale(value);
-			pBalloon->setScale(GOBLIN_SCALE);
         }
         
     }

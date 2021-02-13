@@ -175,10 +175,11 @@ enum emMovingType
 
 enum emMakerType
 {
-	RED,
-	WHITE,
+	RED,	
 	BLACK,
 	GREEN,
+	OGRE,
+	ORC,
 	BOSS_GOBLIN,
 	TotalCNT
 };

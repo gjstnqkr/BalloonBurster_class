@@ -17,10 +17,10 @@ using namespace cocos2d;
 #define BM_OFFSET 10.0f
 
 
-#define BM_COLOR_GREEN cocos2d::Color3B(105.0f, 245.0f, 105.0f)
-#define BM_COLOR_RED cocos2d::Color3B(245.0f, 50.0f, 50.0f)
+#define BM_COLOR_GREEN cocos2d::Color3B(245.0f, 245.0f, 245.0f)
+#define BM_COLOR_RED cocos2d::Color3B(245.0f, 150.0f, 150.0f)
 #define BM_COLOR_BLACK cocos2d::Color3B(120.0f, 120.0f, 120.0f)
-#define BM_COLOR_WHITE cocos2d::Color3B(255.0f, 255.0f, 255.0f)
+#define BM_COLOR_WHITE cocos2d::Color3B(55.0f, 255.0f, 255.0f)
 #define BM_COLOR_BOSS cocos2d::Color3B(155.0f, 185.0f, 175.0f)
 
 
@@ -70,17 +70,73 @@ BalloonMaker* BalloonMaker::create(cocos2d::Vec2 _pos, emMakerType _emType, emMo
     
 #if SPINE2D_BallonMaker == 1
     BalloonMaker *pBM = new (std::nothrow) BalloonMaker();
-    if (pBM)
-    {
-        //spAtlas* atlas = spAtlas_createFromFile("goblins.atlas", 0);
-        //pBM->initWithJsonFile("goblins-pro.json", atlas, 1.0f);
-
+	if (pBM)
+	{
+		//spAtlas* atlas = spAtlas_createFromFile("goblins.atlas", 0);
+		//pBM->initWithJsonFile("goblins-pro.json", atlas, 1.0f);
+		float offset = 0.0;
+		spAtlas* atlas = nullptr;
 #if	USE_VISUALSTUDIO == 1		
-		spAtlas* atlas = spAtlas_createFromFile("spine/Elf_Goblin_01.atlas", 0);
-		pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
-#else		
-		spAtlas* atlas = spAtlas_createFromFile("Elf_Goblin_01.atlas", 0);
-		pBM->initWithJsonFile("Elf_Goblin_01.json", atlas, 0.6);
+		
+		switch (_emType)
+		{
+		case GREEN:
+			atlas = spAtlas_createFromFile("spine/Elf_Goblin_01.atlas", 0);
+			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
+			break;
+		case RED:
+			atlas = spAtlas_createFromFile("spine/Elf_Goblin_01.atlas", 0);
+			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
+			break;
+		case BLACK:
+			atlas = spAtlas_createFromFile("spine/Elf_Goblin_01.atlas", 0);
+			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
+			break;
+		case ORC:
+			atlas = spAtlas_createFromFile("spine/Elf_Orc_01.atlas", 0);
+			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
+			break;
+		case OGRE:
+			atlas = spAtlas_createFromFile("spine/Elf_Ogre_01.atlas", 0);
+			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
+			break;
+
+		default:
+			atlas = spAtlas_createFromFile("spine/Elf_Goblin_01.atlas", 0);
+			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
+			break;
+		}
+
+#else
+		switch (_emType)
+		{
+		case GREEN:
+			atlas = spAtlas_createFromFile("Elf_Goblin_01.atlas", 0);
+			pBM->initWithJsonFile("Elf_Goblin_01.json", atlas, 0.6);
+			break;
+		case RED:
+			atlas = spAtlas_createFromFile("Elf_Goblin_01.atlas", 0);
+			pBM->initWithJsonFile("Elf_Goblin_01.json", atlas, 0.6);
+			break;
+		case BLACK:
+			atlas = spAtlas_createFromFile("Elf_Goblin_01.atlas", 0);
+			pBM->initWithJsonFile("Elf_Goblin_01.json", atlas, 0.6);
+			break;
+		case ORC:
+			atlas = spAtlas_createFromFile("Elf_Orc_01.atlas", 0);
+			pBM->initWithJsonFile("Elf_Goblin_01.json", atlas, 0.6);
+			break;
+		case OGRE:
+			atlas = spAtlas_createFromFile("Elf_Ogre_01.atlas", 0);
+			pBM->initWithJsonFile("Elf_Goblin_01.json", atlas, 0.6);
+			break;
+
+		default:
+			atlas = spAtlas_createFromFile("Elf_Goblin_01.atlas", 0);
+			pBM->initWithJsonFile("Elf_Goblin_01.json", atlas, 0.6);
+			break;
+		}
+
 #endif
         
         pBM->init_SkelAnimation();
@@ -122,24 +178,29 @@ void BalloonMaker::init_Cocos2dInfo(cocos2d::Vec2 _pos, emMakerType _emType, emM
 	float	fBM_vecScale = 0.0f;
     if (_emType == emMakerType::RED)
     {
-        BM_Color3B	    = BM_COLOR_RED;
+        //BM_Color3B	    = BM_COLOR_RED;
         fBM_vecScale	= BM_SCALE_RED;
     }
-    else if(_emType == emMakerType::WHITE)
+    else if(_emType == emMakerType::ORC)
     {
-        BM_Color3B      = BM_COLOR_WHITE;
+        //BM_Color3B      = BM_COLOR_WHITE;
         fBM_vecScale    = BM_SCALE_WHITE;
     }
     else if(_emType == emMakerType::BLACK)
     {
-        BM_Color3B      = BM_COLOR_BLACK;
+        //BM_Color3B      = BM_COLOR_BLACK;
         fBM_vecScale    = BM_SCALE_BLACK;
     }
     else if(_emType == emMakerType::GREEN)
     {
-        BM_Color3B      = BM_COLOR_GREEN;
+        //BM_Color3B      = BM_COLOR_GREEN;
         fBM_vecScale    = BM_SCALE_GREEN;
     }
+	else if (_emType == emMakerType::OGRE)
+	{
+		//BM_Color3B = Color3B::WHITE;
+		fBM_vecScale = BM_SCALE_WHITE;
+	}
 
 
 	//Sprite info
@@ -184,13 +245,21 @@ void BalloonMaker::init_BMakerState(emMakerType _emType, emMovingType _emMoveTyp
 		m_nMaxHP		= 300;
 		m_nCurrentHP	= 300;
         break;
-    case WHITE:
-        m_emType        = WHITE;
+    case ORC:
+        m_emType        = ORC;
         m_emState       = BM_Walking;
         m_emMovingType  = _emMoveType;
         m_fMoveSpeed    = 1.5f - offset;
         m_nMaxHP        = 300;
         m_nCurrentHP    = 300;
+		break;
+	case OGRE:
+		m_emType		= ORC;
+		m_emState		= BM_Walking;
+		m_emMovingType	= _emMoveType;
+		m_fMoveSpeed	= 1.5f - offset;
+		m_nMaxHP		= 300;
+		m_nCurrentHP	= 300;
 		break;
 	case BLACK:
 		m_emType		= BLACK;
@@ -256,10 +325,11 @@ void BalloonMaker::Start_Scheduler(float _dt)
 		float fMoveDistance = visibleSize.width * fDistance;
         
 
-        //log("fly down %f \n", getPosition().y);
+        //log("fly x %f, y %f \n", getPosition().y, getPosition().x);
 		if ((visibleSize.width - fMoveDistance) + BM_OFFSET > BM_Pos.x && get_BMakerState() == emMakerState::BM_Walking)
 		{			
 			init_BMakerState(m_emType, m_emMovingType);
+			//log("BM_Walking \n", getPosition().y, getPosition().x);
 
 			//MoveAction
 			this->stopAllActions();			
@@ -278,7 +348,7 @@ void BalloonMaker::Start_Scheduler(float _dt)
             Vec2 Offset(-5.0f, 55.f);
 			Make_Balloon(vecHandPt + Offset, m_fMoveSpeed);
             set_StateBalloon(emBalloonState::Balloon_Up);
-            setBallonMakerAnimation(emMakerState::BM_FlyingUp, false);
+            setBallonMakerAnimation(emMakerState::BM_FlyingUp, true);
 
 			if (get_BMakerState() != emMakerState::BM_Falling)
 			{
@@ -305,7 +375,7 @@ void BalloonMaker::Start_Scheduler(float _dt)
             Vec2 Offset(-5.0f, 55.f);
             Make_Balloon(vecHandPt + Offset, m_fMoveSpeed);
             set_StateBalloon(emBalloonState::Balloon_Down);
-            setBallonMakerAnimation(emMakerState::BM_FlyingDown, false);
+            setBallonMakerAnimation(emMakerState::BM_FlyingDown, true);
             
             if (get_BMakerState() != emMakerState::BM_Falling)
             {
@@ -588,10 +658,10 @@ void BalloonMaker::ChangeAction()
 
 	if (m_emType == emMakerType::RED)
 	{ }
-	else if (m_emType == emMakerType::WHITE)
+	else if (m_emType == emMakerType::ORC)
 	{
 		this->stopAllActions();
-        BM_Color3B      = BM_COLOR_WHITE;
+        BM_Color3B      = Color3B::WHITE;
         fBM_vecScale    = GOBLIN_SCALE * BM_SCALE_WHITE;
 		ScaleTo* ActionScale	= cocos2d::ScaleTo::create(3.0f, fBM_vecScale, fBM_vecScale);
 		TintTo*  ActionTin		= cocos2d::TintTo::create(3.0f, BM_Color3B.r, BM_Color3B.g, BM_Color3B.b);
@@ -622,7 +692,7 @@ bool BalloonMaker::Make_Balloon(Vec2 _pos, float fSpeedVal)
         int nRanVal = RandomHelper::random_int(1, 3);
         MakeCnt = nRanVal;
     }
-    else if(m_emType == WHITE) {
+    else if(m_emType == ORC) {
         int nRanVal = 3;
         MakeCnt = nRanVal;
     }
@@ -636,7 +706,6 @@ bool BalloonMaker::Make_Balloon(Vec2 _pos, float fSpeedVal)
     {
         Balloon* pBalloon = Balloon::create(_pos, fSpeedVal);
         pBalloon->set_BalloonMaker(this);
-		pBalloon->setScale(GOBLIN_SCALE);
         pParent->addChild(pBalloon);
         m_listBalloon.pushBack(pBalloon);
     }
@@ -677,7 +746,7 @@ void BalloonMaker::RiseUpDown_BMaker(float _dt)
     
     float fSpeed = 0.0f;
     fSpeed = m_fMoveSpeed;
-    if(m_emType == emMakerType::WHITE)
+    if(m_emType == emMakerType::ORC)
         fSpeed = m_listBalloon.size() * m_fMoveSpeed;
     if(get_BMakerState() == emMakerState::BM_FlyingUp)
         Action = cocos2d::MoveBy::create(FLYING_TIME, Vec2(0.0f, visibleSize.height + (FLYING_DIST * fSpeed)));
@@ -891,7 +960,7 @@ void BalloonMaker::updateSpeedAndMove(int balloonCnt) {
         Balloon* pBalloon = (Balloon*)m_listBalloon.at(ii);
         if (pBalloon->getReferenceCount() < 1) continue;
         
-        if(m_emType == WHITE)
+        if(m_emType == ORC)
             pBalloon->set_MoveDistance(m_listBalloon.size() * m_fMoveSpeed);
         
         pBalloon->Fly_Balloon(nothing);

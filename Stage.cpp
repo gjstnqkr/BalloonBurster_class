@@ -546,9 +546,10 @@ void Stage::Appear_BalloonMaker(emMovingType _mType)
     else
         fAppearPosH = visibleSize.height * 0.15; //Current Height 20%
     
-    int type = RandomHelper::random_int(0, (int)emMakerType::GREEN);	
+    int type = RandomHelper::random_int(0, (int)emMakerType::ORC);
 	Vec2 pos = Vec2(visibleSize.width, fAppearPosH);
-    BalloonMaker* pBM = BalloonMaker::create(pos, (emMakerType)type, _mType);
+    //BalloonMaker* pBM = BalloonMaker::create(pos, (emMakerType)type, _mType);
+	BalloonMaker* pBM = BalloonMaker::create(pos, (emMakerType)OGRE, _mType);
     
 	pBM->setScale(GOBLIN_SCALE);
     pBM->set_MaxHigh(visibleSize.height * 0.90);
@@ -984,7 +985,7 @@ void Stage::onTouchEnded(Touch* touch, Event* event)
 				jj = jj - 1;
 				pHello->removeChild(pBalloon, true);
 
-				if (itBM->m_emType == emMakerType::WHITE)
+				if (itBM->m_emType == emMakerType::ORC)
 					itBM->updateSpeedAndMove(itBM->get_BalloonCount());
 				
 				if (itBM->get_BalloonCount() > 0) 
@@ -1010,7 +1011,7 @@ void Stage::onTouchEnded(Touch* touch, Event* event)
 
 	if (m_bTouchBallonMode)
 	{
-		printf_s("ddd");
+		//printf_s("ddd");
 		HelloWorld* pHello = dynamic_cast<HelloWorld*>(getParent());
 		for (int ii = 0; ii < m_listBalloonMaker.size(); ii++)
 		{
@@ -1032,7 +1033,7 @@ void Stage::onTouchEnded(Touch* touch, Event* event)
 					itBM->eraseBalloonInList(pBalloon);
 					pHello->removeChild(pBalloon, true);
 
-					if (itBM->m_emType == emMakerType::WHITE)
+					if (itBM->m_emType == emMakerType::ORC)
 						itBM->updateSpeedAndMove(itBM->get_BalloonCount());
 
 					if (itBM->get_BalloonCount() > 0) continue;

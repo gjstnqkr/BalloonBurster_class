@@ -998,7 +998,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
             itBM->eraseBalloonInList(pBalloon);
             this->removeChild(pBalloon, true);
             
-            if(itBM->m_emType == emMakerType::WHITE)
+            if(itBM->m_emType == emMakerType::ORC)
                 itBM->updateSpeedAndMove(itBM->get_BalloonCount());
             
             if(itBM->get_BalloonCount() > 0) return true;
