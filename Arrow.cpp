@@ -11,6 +11,8 @@ using namespace cocos2d;
 Arrow::Arrow()
 : m_emState(emArrowState::Arr_Preparing)
 , m_pParentArcher(NULL)
+, angle(0.0f)
+, bArrowShooting(false)
 {
 }
 
@@ -81,6 +83,34 @@ void Arrow::ShootArrow()
 	this->schedule(schedule_selector(Arrow::UpdateArrowPos), 0.1);
 }
 
+void Arrow::ShootParabola()
+{
+	//
+	Node* pNode = dynamic_cast<Node*>(m_pParentArcher->getParent());
+	removeFromParentAndCleanup(false);
+	if (pNode == NULL) return;
+	pNode->addChild(this);
+
+
+	PhysicsBody* pbody_Arrow = PhysicsBody::createBox(this->getContentSize(), BASIC_MATERIAL);
+	pbody_Arrow->setContactTestBitmask(0xFFFFFFFF);
+	pbody_Arrow->setDynamic(false);
+	this->setPhysicsBody(pbody_Arrow);
+
+	this->setVisible(true);
+	this->setPosition(m_pParentArcher->get_ArcSpineBonePos("Left_Arm"));
+	this->setScale(arrX, arrY);
+	this->set_ArrowState(emArrowState::Arr_Shooting);
+	this->stopAllActions();
+	//auto Action = cocos2d::MoveBy::create(Arr_Speed, Vec2(SCREEN_WIDTH, 0.0f));
+	//this->runAction(Action);
+	
+	StopArrowUpdate(0);
+	bArrowShooting = true;
+	Call_FuncAfterFewTime(schedule_selector(Arrow::StopArrowUpdate), 5.0f);
+	this->schedule(schedule_selector(Arrow::UpdateArrowPos), 0.1);
+}
+
 void Arrow::FallingArrow()
 {
 	this->set_ArrowState(emArrowState::Arr_Falling);
@@ -105,7 +135,7 @@ void Arrow::HitArrow()
 	if (m_pParentArcher != NULL)
         this->setPosition(Vec2::ZERO);
 
-	this->schedule(schedule_selector(Arrow::UpdateArrowPos), 0.5);
+	this->schedule(schedule_selector(Arrow::UpdateArrowPos), 0.1);
 }
 
 void Arrow::UpdateArrowPos(float f)
@@ -115,10 +145,12 @@ void Arrow::UpdateArrowPos(float f)
 	
 	if (this->get_ArrowState() == emArrowState::Arr_Shooting)
 	{
-		if (visibleSize.width < this->getPosition().x)
+		if (visibleSize.width < this->getPosition().x || this->getPosition().y < 0.0f || this->getPosition().x < 0.0f)
 		{
 			this->unschedule(schedule_selector(Arrow::UpdateArrowPos));
 			this->set_ArrowState(emArrowState::Arr_Preparing);
+
+			StopArrowUpdate(0);
             if (m_pParentArcher != NULL){
                 init_Cocos2dInfo();
 			}
@@ -142,10 +174,40 @@ void Arrow::UpdateArrowPos(float f)
         if (m_pParentArcher != NULL){
             init_Cocos2dInfo();
 		}
-			
-	}
-
+	}	
 }
+
+void Arrow::StopArrowUpdate(float f)
+{
+	bArrowShooting = false;
+	angle = 0.0f;
+}
+
+void Arrow::update(float delta)
+{
+	if (!bArrowShooting) return;
+
+	Vec2 pos = this->getPosition();
+
+	float offset = 40;	
+	angle = angle + (offset * delta); // angle은 0부터 시작
+	
+	float radian = (angle*M_PI) / 180;
+	float radian2 = ((angle + 0)*M_PI) / 180;
+
+	float fHeight = sin(radian);
+	float fDistance = cos(radian2);	
+
+	//log("\n fHeight %f", fHeight);
+	//log("\n fDistance %f", fDistance);
+
+	pos = pos + Vec2(fDistance * 15, -fHeight * 10);
+
+	log("\n fDistance*15 = %f", fDistance * 15);
+	log("\n pos.x %f", pos.x);
+	this->setPosition(pos);
+}
+
 
 emArrowState Arrow::get_ArrowState(void)
 {
@@ -160,4 +222,10 @@ void Arrow::set_ArrowState(emArrowState _emState)
 void Arrow::set_Archer(Archer * pArcher)
 {
 	m_pParentArcher = pArcher;
+}
+
+
+void Arrow::Call_FuncAfterFewTime(void(Ref::*SEL_SCHEDULE)(float), float _fSec)
+{
+	this->scheduleOnce(SEL_SCHEDULE, _fSec);
 }

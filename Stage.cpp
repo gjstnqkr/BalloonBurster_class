@@ -458,7 +458,7 @@ void Stage::appearCloud()
 		Sprite* itor = m_vecCloud.at(ii); 
 		if (itor->getOpacity() != 255) continue;
 			
-		int valueX = RandomHelper::random_real(visibleSize.width * 0.2f, visibleSize.width * 0.9f);
+		int valueX = RandomHelper::random_real(visibleSize.width * 0.4f, visibleSize.width * 0.8f);
 		int valueY = RandomHelper::random_real(visibleSize.height * 0.2f, visibleSize.height * 0.9f);
 			
 		itor->setPosition(Vec2(valueX, valueY));
@@ -553,7 +553,7 @@ void Stage::Appear_BalloonMaker(emMovingType _mType)
 	pBM->setScale(GOBLIN_SCALE);
     pBM->set_MaxHigh(visibleSize.height * 0.90);
     pBM->set_MaxLow(visibleSize.height * 0.15);
-    
+	pBM->m_uId = m_listBalloonMaker.size();
 	m_listBalloonMaker.pushBack(pBM);
 	
 	pParent->addChild(pBM);
@@ -866,6 +866,8 @@ void Stage::init_Sprite()
 	for (int ii = 0; ii < 10; ii++)
 	{
 		auto spt1 = Sprite::createWithTexture(batch->getTexture());
+		int nRanVal = RandomHelper::random_int(180, 300);
+		spt1->setScale(0.01 * nRanVal);
 		m_vecCloud.pushBack(spt1);
 	}
 
@@ -885,7 +887,7 @@ void Stage::Clear_LifeList()
     
     for(int ii = 0; ii < nLifeCnt; ii++)
     {
-        Sprite* pSpt = m_listUserLifeSprite.at(ii);
+        Sprite* pSpt = m_listUserLifeSprite.at(ii);		
         pParent->removeChild(pSpt);
         m_listUserLifeSprite.eraseObject(pSpt);
     }

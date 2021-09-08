@@ -177,7 +177,8 @@ int Archer::ShootArrow()
 		//
 		if (CurState == emArrowState::Arr_ShootWait)
 		{
-			pItArr->ShootArrow();
+			//pItArr->ShootArrow();
+			pItArr->ShootParabola();
 			shooing = 1;
 		}
 		

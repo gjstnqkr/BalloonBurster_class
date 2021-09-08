@@ -72,7 +72,7 @@ bool CMainScene::init()
     init_layer();
     init_option();
     
-    this->scheduleUpdate();
+    //this->scheduleUpdate();
     this->initWithPhysics();
     this->schedule(schedule_selector(CMainScene::schedulerShootArr), 3.0f);
     
@@ -206,7 +206,7 @@ bool CMainScene::init_sprite()
 #if	USE_VISUALSTUDIO == 1
     auto batch = SpriteBatchNode::create("image/clowdlarge.png");
 #else
-	auto batch = SpriteBatchNode::create("clowdlarge.png");
+	auto batch = SpriteBatchNode::create("clowdlarge.png"); 
 #endif
 
     addChild(batch,0,TAG_CLOUD_BATCHNODE);
@@ -236,7 +236,7 @@ bool CMainScene::init_sprite()
         float fRandomY = 0.1 * valueY;
         itor->setPosition(visibleSize.width * fRandomX, visibleSize.height * fRandomY);
         
-        int value = RandomHelper::random_int(3, 10);
+        int value = RandomHelper::random_int(7, 20);
         float fRanScale = 0.1 * value;
         itor->setScale(fRanScale);
         

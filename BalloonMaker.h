@@ -19,6 +19,7 @@ public:
 	emMakerType			m_emType;
 	emMakerState		m_emState;
 	emMovingType		m_emMovingType;
+	int					m_uId;
 
 	float				m_fMoveSpeed;		//	
 	unsigned int		m_nMaxHP;
@@ -32,7 +33,6 @@ public:
 private:
 	float		m_fTime;			//	
 	float		m_fTempTime;		//
-
 public:
 	
 

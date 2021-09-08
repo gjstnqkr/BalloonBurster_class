@@ -8,13 +8,16 @@
 
 using namespace cocos2d;
 
-#define MOVE_TIME 10.0f
+#define MOVE_TIME 12.0f
+#define WALK_MOVE_TIME 12.0f
 #define MOVE_DIST 1334.0f
 //#define MOVE_DIST 350.0f
 #define MAKE_TIME_Lv1 6.0f
 #define MAKE_TIME_Lv2 2.5f
 
 #define BM_OFFSET 10.0f
+
+#define BALLOON_OFFSET Vec2(0, 10);
 
 
 #define BM_COLOR_GREEN cocos2d::Color3B(245.0f, 245.0f, 245.0f)
@@ -75,35 +78,36 @@ BalloonMaker* BalloonMaker::create(cocos2d::Vec2 _pos, emMakerType _emType, emMo
 		//spAtlas* atlas = spAtlas_createFromFile("goblins.atlas", 0);
 		//pBM->initWithJsonFile("goblins-pro.json", atlas, 1.0f);
 		float offset = 0.0;
+		float Scale = 0.5;
 		spAtlas* atlas = nullptr;
 #if	USE_VISUALSTUDIO == 1		
-		
-		switch (_emType)
+		 
+		switch (_emType) //OVer
 		{
 		case GREEN:
 			atlas = spAtlas_createFromFile("spine/Elf_Goblin_01.atlas", 0);
-			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
+			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, Scale);
 			break;
 		case RED:
 			atlas = spAtlas_createFromFile("spine/Elf_Goblin_01.atlas", 0);
-			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
+			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, Scale);
 			break;
 		case BLACK:
 			atlas = spAtlas_createFromFile("spine/Elf_Goblin_01.atlas", 0);
-			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
+			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, Scale);
 			break;
 		case ORC:
 			atlas = spAtlas_createFromFile("spine/Elf_Orc_01.atlas", 0);
-			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
+			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, Scale);
 			break;
 		case OGRE:
 			atlas = spAtlas_createFromFile("spine/Elf_Ogre_01.atlas", 0);
-			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
+			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, Scale);
 			break;
 
 		default:
 			atlas = spAtlas_createFromFile("spine/Elf_Goblin_01.atlas", 0);
-			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, 0.6);
+			pBM->initWithJsonFile("spine/Elf_Goblin_01.json", atlas, Scale);
 			break;
 		}
 
@@ -345,8 +349,8 @@ void BalloonMaker::Start_Scheduler(float _dt)
 		else if (get_BMakerState() == emMakerState::BM_FlyingUp && CurActStat == 0.0f) //fly up
 		{
             Vec2 vecHandPt =get_BMSpineBonePos("Right_Arm_HandPt");
-			Vec2 Offset = Vec2(0, 0);
-			if (get_BMakerType() == OGRE || get_BMakerType() == ORC) Offset = Vec2(0, 12);
+			Vec2 Offset = Vec2(0, -7);
+			if (get_BMakerType() == OGRE || get_BMakerType() == ORC) Offset = Vec2(0, 5);
 			
 			Make_Balloon(vecHandPt + BallonPos_Offset + Offset, m_fMoveSpeed);
             set_StateBalloon(emBalloonState::Balloon_Up);
@@ -375,8 +379,8 @@ void BalloonMaker::Start_Scheduler(float _dt)
         {
             Vec2 vecHandPt =get_BMSpineBonePos("Right_Arm_HandPt");
 
-			Vec2 Offset = Vec2(0, 0);
-			if (get_BMakerType() == OGRE || get_BMakerType() == ORC) Offset = Vec2(0, 12);
+			Vec2 Offset = Vec2(0, -7);
+			if (get_BMakerType() == OGRE || get_BMakerType() == ORC) Offset = Vec2(0, 5);
 
 			Make_Balloon(vecHandPt + BallonPos_Offset + Offset, m_fMoveSpeed);
             set_StateBalloon(emBalloonState::Balloon_Down);
@@ -571,10 +575,23 @@ void BalloonMaker::Start_Scheduler(float _dt)
             }
 		}
         
-        if (get_BMakerState() == emMakerState::BM_None)
+        if (get_BMakerState() == emMakerState::BM_Achieved_Attack) //20210729 여기부터
         {
-            this->stopAllActions();
+			Vec2 ArcherPos = pHello->m_pArcher->getPosition();
+			Vec2 WeaponPt = get_BMSpineBonePos("weaponPoint");
+
+			float dist = WeaponPt.distance(ArcherPos);
+
+			//WeaponPt
+			//log("[%d] distance %f", m_uId, dist);
+
+			//this->get
         }
+
+		if (get_BMakerState() == emMakerState::BM_None)
+		{
+			this->stopAllActions();
+		}
 	}
 	else
 	{
@@ -618,7 +635,7 @@ void BalloonMaker::Walk_Ground(emMovingType _MovingType)
 #else
         this->setScaleX(this->getScaleX()*(-1));
 #endif
-		auto Action = cocos2d::MoveBy::create(MOVE_TIME, Vec2(nDirVal * MOVE_DIST, 0.0f));
+		auto Action = cocos2d::MoveBy::create(WALK_MOVE_TIME, Vec2(nDirVal * MOVE_DIST, 0.0f));
 		
 
 		this->runAction(Action);		
@@ -636,7 +653,7 @@ void BalloonMaker::Walk_Ground(emMovingType _MovingType)
 
 		//이동
 		int nDirVal = nRanVal == 0 ? 1 : -1;		
-		auto Action2 = cocos2d::MoveBy::create(MOVE_TIME, Vec2(nDirVal * MOVE_DIST, 0.0f));
+		auto Action2 = cocos2d::MoveBy::create(WALK_MOVE_TIME, Vec2(nDirVal * MOVE_DIST, 0.0f));
 
 		this->runAction(Action2);
 	}

@@ -171,7 +171,7 @@ private:
 	//update
 	void callEveryFrame(float f);
 	void updateScene(float f);
-    
+	void update(float delta);
 
 	//Collision Func
 	bool onContactBegin(cocos2d::PhysicsContact& contact);

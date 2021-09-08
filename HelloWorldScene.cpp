@@ -806,7 +806,7 @@ void HelloWorld::onMouseMove(cocos2d::Event * event)
 
 
 
-	log("onMouseMove - x : %f // y : %f\n", fCursorX, fCursorY);
+	//log("onMouseMove - x : %f // y : %f\n", fCursorX, fCursorY);
 }
 
 void HelloWorld::onMouseUp(cocos2d::Event * event)
@@ -1107,6 +1107,10 @@ void HelloWorld::updateScene(float f)
 		auto Action = cocos2d::MoveBy::create(7.0f, Vec2(0.0f, nDirVal * 750.0f));
 		m_pArcher->runAction(Action);
 	}
+}
+
+void HelloWorld::update(float delta)
+{
 }
 
 void HelloWorld::menuGameStartBtn(Ref* sender)

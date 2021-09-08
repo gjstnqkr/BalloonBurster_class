@@ -59,7 +59,7 @@
 //Balloon Burster
 #define BASIC_MATERIAL PhysicsMaterial(5.0f, 0.0f, 1.0f)
 #define ROCK_MATERIAL PhysicsMaterial(500.0f, 0.0f, 1.0f)
-#define FLYING_TIME 10.0f
+#define FLYING_TIME 17.0f
 #define FLYING_DIST 100.0f
 
 
